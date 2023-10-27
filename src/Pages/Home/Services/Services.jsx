@@ -1,13 +1,31 @@
 import { useEffect, useState } from "react";
 import ServicesCard from "./ServicesCard";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "../../../AxiosAPI/axiosInstance";
+import CustomLoading from "../../../Components/CustomLoading";
 
 function Services() {
-  const [services, setServices] = useState([]);
-  useEffect(() => {
-    fetch("services.json")
-      .then((res) => res.json())
-      .then((data) => setServices(data));
-  }, []);
+  const {
+    data: services,
+    isLoading,
+
+    error,
+  } = useQuery({
+    queryFn: async () => {
+      const res = await axiosInstance.get("/services");
+      return res.data;
+    },
+    queryKey: ["serviceHomeCard"],
+  });
+
+  if (isLoading) {
+    return <CustomLoading></CustomLoading>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <div className="mt-4">
       <div className="text-center">
@@ -24,6 +42,9 @@ function Services() {
           <ServicesCard service={service} key={service._id}></ServicesCard>
         ))}
       </div>
+      <button className="block mx-auto my-10 btn btn-outline btn-error">
+        More Services
+      </button>
     </div>
   );
 }

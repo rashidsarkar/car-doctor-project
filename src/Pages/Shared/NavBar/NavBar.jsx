@@ -1,6 +1,14 @@
 import { Link } from "react-router-dom";
 import logo from "../../../assets/logo.svg";
+import { useContext } from "react";
+import { AuthContexr } from "../../../firebase/AuthProvider";
 function NavBar() {
+  const { user, logOut } = useContext(AuthContexr);
+  const handleLogOut = () => {
+    logOut()
+      .than((res) => console.log(`logOut Done bt ${res}`))
+      .catch((err) => console.log(err));
+  };
   const navItems = (
     <>
       <li>
@@ -9,6 +17,22 @@ function NavBar() {
       <li>
         <Link to="/about">About</Link>
       </li>
+      {user?.email ? (
+        <>
+          <li>
+            <Link to="/bookings">My Bookings</Link>
+          </li>
+          <li>
+            <button onClick={handleLogOut} className="">
+              LogOut
+            </button>
+          </li>
+        </>
+      ) : (
+        <li>
+          <Link to="/login">Login</Link>
+        </li>
+      )}
     </>
   );
   return (

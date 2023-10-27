@@ -1,8 +1,19 @@
 import { Link } from "react-router-dom";
 import loginImg from "../../assets/images/login/login.svg";
+import { useContext } from "react";
+import { AuthContexr } from "../../firebase/AuthProvider";
 function Login() {
+  const { singIn } = useContext(AuthContexr);
   const handleLogin = (e) => {
     e.preventDefault();
+    const form = e.target;
+
+    const email = form.email.value;
+    const pass = form.password.value;
+
+    singIn(email, pass)
+      .than((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
   return (
     <div className="min-h-screen hero bg-base-200">
