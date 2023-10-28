@@ -13,10 +13,12 @@ function Bookings() {
     data: bookings,
     isLoading,
     refetch,
+    error,
   } = useQuery({
     queryFn: async () => {
       const res = await axiosInstance.get(`/bookings?email=${user?.email}`, {
-        withCredentials: true,
+        // const res = await axiosInstance.get(`/bookings?email=${"car@gm.com"}`, {
+        // withCredentials: true,
       });
       return res.data;
     },
@@ -26,6 +28,9 @@ function Bookings() {
     refetch();
   }, [user, refetch]);
 
+  if (error) {
+    return <p>{error.message} .......</p>;
+  }
   if (isLoading) {
     return <p>loading.......</p>;
   }
