@@ -15,7 +15,9 @@ function Bookings() {
     refetch,
   } = useQuery({
     queryFn: async () => {
-      const res = await axiosInstance.get(`/bookings?email=${user?.email}`);
+      const res = await axiosInstance.get(`/bookings?email=${user?.email}`, {
+        withCredentials: true,
+      });
       return res.data;
     },
     queryKey: ["bookingData"],

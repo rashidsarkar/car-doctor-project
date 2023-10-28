@@ -20,7 +20,11 @@ const router = createBrowserRouter([
       },
       {
         path: "checkout/:idx",
-        element: <CheckOut></CheckOut>,
+        element: (
+          <PrivateRoutes>
+            <CheckOut></CheckOut>,
+          </PrivateRoutes>
+        ),
       },
       {
         path: "/bookings",

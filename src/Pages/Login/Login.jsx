@@ -1,18 +1,40 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import loginImg from "../../assets/images/login/login.svg";
 import { useContext } from "react";
 import { AuthContexr } from "../../firebase/AuthProvider";
+import { useMutation } from "@tanstack/react-query";
+import axiosInstance from "../../AxiosAPI/axiosInstance";
 function Login() {
   const { singIn } = useContext(AuthContexr);
+
+  const location = useLocation();
+  // console.log(location);
+  const navigate = useNavigate();
+  const { mutateAsync: tokenDATA } = useMutation({
+    mutationFn: async (bodyData) => {
+      const result = await axiosInstance.post("/jwt", bodyData, {
+        withCredentials: true,
+      });
+      console.log(result.data);
+      return result.data;
+    },
+
+    onSuccess: () => navigate(location?.state ? location?.state : "/"),
+  });
   const handleLogin = (e) => {
     e.preventDefault();
     const form = e.target;
 
     const email = form.email.value;
     const pass = form.password.value;
-
+    const user = { email, pass };
     singIn(email, pass)
-      .than((res) => console.log(res))
+      .then(async (res) => {
+        // get acces Token
+        await tokenDATA(user);
+
+        // console.log(res);
+      })
       .catch((err) => console.log(err));
   };
   return (
